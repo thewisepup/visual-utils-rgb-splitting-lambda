@@ -6,8 +6,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  init:
+  deploy-dev:
     runs-on: ubuntu-22.04
+    environment: dev
     steps:
       - uses: actions/checkout@v3
 
@@ -23,14 +24,27 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Create and Deploy Prod Lambda Package
+      - name: Create and Deploy Lambda Package
         run: python create_lambda_package.py --env dev
-      - name: Test AWS Credentials
-        run: |
-          # This will print only the first few characters followed by asterisks
-          echo "Access Key ID: ${AWS_ACCESS_KEY_ID:0:5}****************"
-          # Or verify credentials are set without showing any part of them
-          if [ -n "$AWS_ACCESS_KEY_ID" ]; then
-            echo "AWS_ACCESS_KEY_ID is set"
-          else
-            echo "AWS_ACCESS_KEY_ID is not set"
+
+  deploy-prod:
+    needs: deploy-dev
+    runs-on: ubuntu-22.04
+    environment: prod
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Create and Deploy Lambda Package
+        run: python create_lambda_package.py --env prod
