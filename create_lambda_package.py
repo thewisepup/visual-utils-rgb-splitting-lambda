@@ -11,12 +11,10 @@ RED = "\033[31m"
 ENV_CONFIGS = {
     "dev": {
         "bucket": "lambda-deployment-dev-4ce10b1",
-        "profile": "visual-utils-dev",
         "function_name": "rgb_splitting_lambda-dev",
     },
     "prod": {
         "bucket": "lambda-deployment-prod-4ce27e9",
-        "profile": "visual-utils-prod",
         "function_name": "rgb_splitting_lambda-prod",
     },
 }
