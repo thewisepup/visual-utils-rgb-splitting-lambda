@@ -29,21 +29,6 @@ def create_lambda_package(environment="dev"):
 
     CONFIG = ENV_CONFIGS[environment]
 
-    # os.environ["AWS_PROFILE"] = CONFIG["profile"]
-
-    # # Verify AWS Profile is set correctly
-    # aws_profile = os.environ.get("AWS_PROFILE")
-    # if aws_profile != CONFIG["profile"]:
-    #     print(
-    #         f"{RED}Error: AWS_PROFILE should be set to '{CONFIG['profile']}' for {environment} environment{END_COLOR}"
-    #     )
-    #     print(f"{YELLOW}Please run: export AWS_PROFILE={CONFIG['profile']}{END_COLOR}")
-    #     return
-    # print(
-    #     f"{YELLOW}Using {environment} environment with AWS Profile: {aws_profile}{END_COLOR}"
-    # )
-
-
     print(
         f"{YELLOW}Creating lambda package for {environment} environment...{END_COLOR}"
     )
@@ -86,32 +71,32 @@ def create_lambda_package(environment="dev"):
     shutil.make_archive("rgb_splitting_lambda", "zip", "package")
 
     # Upload the ZIP file to S3
-    # print(f"{YELLOW}Uploading package to S3...{END_COLOR}")
-    # subprocess.check_call(
-    #     [
-    #         "aws",
-    #         "s3",
-    #         "cp",
-    #         "rgb_splitting_lambda.zip",
-    #         f"s3://{CONFIG['bucket']}",
-    #     ]
-    # )
+    print(f"{YELLOW}Uploading package to S3...{END_COLOR}")
+    subprocess.check_call(
+        [
+            "aws",
+            "s3",
+            "cp",
+            "rgb_splitting_lambda.zip",
+            f"s3://{CONFIG['bucket']}",
+        ]
+    )
 
     # Update Lambda function code
     print(f"{YELLOW}Updating Lambda function code...{END_COLOR}")
-    # subprocess.check_call(
-    #     [
-    #         "aws",
-    #         "lambda",
-    #         "update-function-code",
-    #         "--function-name",
-    #         CONFIG["function_name"],
-    #         "--s3-bucket",
-    #         CONFIG["bucket"],
-    #         "--s3-key",
-    #         "rgb_splitting_lambda.zip",
-    #     ]
-    # )
+    subprocess.check_call(
+        [
+            "aws",
+            "lambda",
+            "update-function-code",
+            "--function-name",
+            CONFIG["function_name"],
+            "--s3-bucket",
+            CONFIG["bucket"],
+            "--s3-key",
+            "rgb_splitting_lambda.zip",
+        ]
+    )
 
     # Clean up the temporary directory
     print(f"{YELLOW}Cleaning up temporary directory...{END_COLOR}")
