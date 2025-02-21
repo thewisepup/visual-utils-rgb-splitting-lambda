@@ -8,7 +8,11 @@ on:
 jobs:
   init:
     runs-on: ubuntu-22.04
-    environment: dev
+    strategy:
+      matrix:
+        environment: [dev, prod]
+
+    environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v3
 
@@ -37,5 +41,5 @@ jobs:
             echo "AWS_ACCESS_KEY_ID is not set"
           fi
 
-      - name: Create and Deploy Dev Lambda Package
-        run: python create_lambda_package.py --env dev
+      - name: Create and Deploy Lambda Package
+        run: python create_lambda_package.py --env ${{ matrix.environment }}
