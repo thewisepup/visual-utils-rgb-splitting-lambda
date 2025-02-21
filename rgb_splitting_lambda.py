@@ -24,37 +24,6 @@ def create_channel_images(original_image):
     Returns:
         tuple: (red_image, green_image, blue_image) as PIL Images
     """
-
-    """
-        3D array representation of RGB image:
-    [
-      [  # Row 1
-        [178, 214, 66],  # Pixel 1: [R, G, B]
-        [145, 178, 89],  # Pixel 2: [R, G, B]
-        ...
-      ],
-      [  # Row 2
-        [123, 231, 99],  # Pixel 3: [R, G, B]
-        [233, 188, 76],  # Pixel 4: [R, G, B]
-        ...
-      ]
-    ]
-    
-    After red_img_array[:, :, 1] = 0:
-    [
-      [  # Row 1
-        [178,   0,   66],  # Only red values remain
-        [145,   0,   89],
-        ...
-      ],
-      [  # Row 2
-        [123,   0,   99],
-        [233,   0,   76],
-        ...
-      ]
-    ]
-    """
-
     red_img_array = np.array(original_image)
     red_img_array[:, :, 1] = 0
     red_img_array[:, :, 2] = 0
@@ -109,8 +78,9 @@ def process_record(record):
     try:
         s3_response = S3_CLIENT.get_object(Bucket=source_bucket, Key=object_key)
         original_image = Image.open(BytesIO(s3_response["Body"].read())).convert("RGB")
-        width, height = original_image.size
-        logger.info(f"Successfully loaded image {object_key}: {width}x{height} pixels")
+        logger.info(
+            f"Successfully loaded image {object_key} of size {original_image.size}"
+        )
 
         red_img, green_img, blue_img = create_channel_images(original_image)
         logger.info(f"RGB Channel separation completed for {object_key}")
