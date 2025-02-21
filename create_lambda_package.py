@@ -103,6 +103,7 @@ def create_lambda_package(environment="dev"):
     shutil.rmtree("package")
     os.remove("rgb_splitting_lambda.zip")
 
+    print(f"{GREEN}FDSFDSDF package created and updated successfully.{END_COLOR}")
     print(f"{GREEN}Lambda package created and updated successfully.{END_COLOR}")
 
 
