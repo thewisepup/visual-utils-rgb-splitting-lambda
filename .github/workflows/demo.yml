@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v3
@@ -17,10 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.x"
+          python-version: 3.x
 
       - name: Create Dev Lambda Package
-        run: python3 create_lambda_package.py --env dev
-
-      - name: Create Prod Lambda Package
-        run: python3 create_lambda_package.py --env prod
+        run: python create_lambda_package.py --env dev
