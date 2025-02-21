@@ -23,6 +23,12 @@ jobs:
     runs-on: ubuntu-22.04
     environment: dev
     steps:
+      - name: Debug
+        run: |
+          # This will print only the first few characters followed by asterisks
+          echo "debug"
+          # Or verify credentials are set without showing any part of them
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
