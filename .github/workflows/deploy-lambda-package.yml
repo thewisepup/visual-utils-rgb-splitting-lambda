@@ -1,4 +1,4 @@
-name: Create Lambda Packages
+name: Deploy Lambda Package
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Create and Deploy Lambda Package
+      - name: Deploy Lambda Package
         run: python create_lambda_package.py --env dev
 
   deploy-prod:
@@ -46,5 +46,5 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Create and Deploy Lambda Package
+      - name: Deploy Lambda Package
         run: python create_lambda_package.py --env prod
