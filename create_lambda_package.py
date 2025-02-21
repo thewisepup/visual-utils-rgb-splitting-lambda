@@ -43,6 +43,7 @@ def create_lambda_package(environment="dev"):
     #     f"{YELLOW}Using {environment} environment with AWS Profile: {aws_profile}{END_COLOR}"
     # )
 
+
     print(
         f"{YELLOW}Creating lambda package for {environment} environment...{END_COLOR}"
     )
