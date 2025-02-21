@@ -1,0 +1,26 @@
+name: Create Lambda Packages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Create Dev Lambda Package
+        run: python3 create_lambda_package.py --env dev
+
+      - name: Create Prod Lambda Package
+        run: python3 create_lambda_package.py --env prod

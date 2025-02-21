@@ -27,97 +27,99 @@ def create_lambda_package(environment="dev"):
         print(f"{RED}Invalid environment. Please choose 'dev' or 'prod'{END_COLOR}")
         return
 
-    CONFIG = ENV_CONFIGS[environment]
+    print(f"{GREEN}Creating lambda package for {environment} environment...{END_COLOR}")
 
-    os.environ["AWS_PROFILE"] = CONFIG["profile"]
+    # CONFIG = ENV_CONFIGS[environment]
 
-    # Verify AWS Profile is set correctly
-    aws_profile = os.environ.get("AWS_PROFILE")
-    if aws_profile != CONFIG["profile"]:
-        print(
-            f"{RED}Error: AWS_PROFILE should be set to '{CONFIG['profile']}' for {environment} environment{END_COLOR}"
-        )
-        print(f"{YELLOW}Please run: export AWS_PROFILE={CONFIG['profile']}{END_COLOR}")
-        return
-    print(
-        f"{YELLOW}Using {environment} environment with AWS Profile: {aws_profile}{END_COLOR}"
-    )
+    # os.environ["AWS_PROFILE"] = CONFIG["profile"]
 
-    print(
-        f"{YELLOW}Creating lambda package for {environment} environment...{END_COLOR}"
-    )
-    # Create a temporary directory for packaging
-    if os.path.exists("package"):
-        shutil.rmtree("package")
-    os.makedirs("package")
+    # # Verify AWS Profile is set correctly
+    # aws_profile = os.environ.get("AWS_PROFILE")
+    # if aws_profile != CONFIG["profile"]:
+    #     print(
+    #         f"{RED}Error: AWS_PROFILE should be set to '{CONFIG['profile']}' for {environment} environment{END_COLOR}"
+    #     )
+    #     print(f"{YELLOW}Please run: export AWS_PROFILE={CONFIG['profile']}{END_COLOR}")
+    #     return
+    # print(
+    #     f"{YELLOW}Using {environment} environment with AWS Profile: {aws_profile}{END_COLOR}"
+    # )
 
-    # Copy the lambda function file
-    print(f"{YELLOW}Copying lambda function file...{END_COLOR}")
+    # print(
+    #     f"{YELLOW}Creating lambda package for {environment} environment...{END_COLOR}"
+    # )
+    # # Create a temporary directory for packaging
+    # if os.path.exists("package"):
+    #     shutil.rmtree("package")
+    # os.makedirs("package")
 
-    shutil.copy2("rgb_splitting_lambda.py", "package/rgb_splitting_lambda.py")
+    # # Copy the lambda function file
+    # print(f"{YELLOW}Copying lambda function file...{END_COLOR}")
 
-    # Install dependencies into the package directory
-    print(f"{YELLOW}Installing dependencies...{END_COLOR}")
+    # shutil.copy2("rgb_splitting_lambda.py", "package/rgb_splitting_lambda.py")
 
-    subprocess.check_call(
-        [
-            "pip3",
-            "install",
-            "--platform",
-            "manylinux2014_x86_64",
-            "--target",
-            "package",
-            "--implementation",
-            "cp",
-            "--python-version",
-            "3.11",
-            "--only-binary=:all:",
-            "-r",
-            "requirements.txt",
-        ]
-    )
+    # # Install dependencies into the package directory
+    # print(f"{YELLOW}Installing dependencies...{END_COLOR}")
 
-    # Create the ZIP file
-    print(f"{YELLOW}Creating ZIP file...{END_COLOR}")
-    if os.path.exists("rgb_splitting_lambda.zip"):
-        os.remove("rgb_splitting_lambda.zip")
+    # subprocess.check_call(
+    #     [
+    #         "pip3",
+    #         "install",
+    #         "--platform",
+    #         "manylinux2014_x86_64",
+    #         "--target",
+    #         "package",
+    #         "--implementation",
+    #         "cp",
+    #         "--python-version",
+    #         "3.11",
+    #         "--only-binary=:all:",
+    #         "-r",
+    #         "requirements.txt",
+    #     ]
+    # )
 
-    shutil.make_archive("rgb_splitting_lambda", "zip", "package")
+    # # Create the ZIP file
+    # print(f"{YELLOW}Creating ZIP file...{END_COLOR}")
+    # if os.path.exists("rgb_splitting_lambda.zip"):
+    #     os.remove("rgb_splitting_lambda.zip")
 
-    # Upload the ZIP file to S3
-    print(f"{YELLOW}Uploading package to S3...{END_COLOR}")
-    subprocess.check_call(
-        [
-            "aws",
-            "s3",
-            "cp",
-            "rgb_splitting_lambda.zip",
-            f"s3://{CONFIG['bucket']}",
-        ]
-    )
+    # shutil.make_archive("rgb_splitting_lambda", "zip", "package")
 
-    # Update Lambda function code
-    print(f"{YELLOW}Updating Lambda function code...{END_COLOR}")
-    subprocess.check_call(
-        [
-            "aws",
-            "lambda",
-            "update-function-code",
-            "--function-name",
-            CONFIG["function_name"],
-            "--s3-bucket",
-            CONFIG["bucket"],
-            "--s3-key",
-            "rgb_splitting_lambda.zip",
-        ]
-    )
+    # # Upload the ZIP file to S3
+    # print(f"{YELLOW}Uploading package to S3...{END_COLOR}")
+    # subprocess.check_call(
+    #     [
+    #         "aws",
+    #         "s3",
+    #         "cp",
+    #         "rgb_splitting_lambda.zip",
+    #         f"s3://{CONFIG['bucket']}",
+    #     ]
+    # )
 
-    # Clean up the temporary directory
-    print(f"{YELLOW}Cleaning up temporary directory...{END_COLOR}")
-    shutil.rmtree("package")
-    os.remove("rgb_splitting_lambda.zip")
+    # # Update Lambda function code
+    # print(f"{YELLOW}Updating Lambda function code...{END_COLOR}")
+    # subprocess.check_call(
+    #     [
+    #         "aws",
+    #         "lambda",
+    #         "update-function-code",
+    #         "--function-name",
+    #         CONFIG["function_name"],
+    #         "--s3-bucket",
+    #         CONFIG["bucket"],
+    #         "--s3-key",
+    #         "rgb_splitting_lambda.zip",
+    #     ]
+    # )
 
-    print(f"{GREEN}Lambda package created and updated successfully.{END_COLOR}")
+    # # Clean up the temporary directory
+    # print(f"{YELLOW}Cleaning up temporary directory...{END_COLOR}")
+    # shutil.rmtree("package")
+    # os.remove("rgb_splitting_lambda.zip")
+
+    # print(f"{GREEN}Lambda package created and updated successfully.{END_COLOR}")
 
 
 if __name__ == "__main__":
