@@ -12,11 +12,7 @@ jobs:
     strategy:
       matrix:
         environment: [dev, prod]
-        include:
-          - environment: dev
-            order: 1
-          - environment: prod
-            order: 2
+      max-parallel: 1
     environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v3
